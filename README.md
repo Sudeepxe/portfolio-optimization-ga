@@ -33,8 +33,9 @@ In this project, I implemented a **Genetic Algorithm-based approach** to:
 ## 📊 Results & Insights
 
 - GA successfully identified optimal portfolio weights  
-- Achieved better risk-return balance compared to benchmarks  
-- Demonstrated strong generalization on unseen data  
+- Achieved improved risk-return balance compared to equal-weight and random portfolios
+- Reduced portfolio risk while maintaining competitive returns
+- Demonstrated stable convergence of the optimization algorithm
 - Flexible optimization for different risk preferences  
 
 ---
