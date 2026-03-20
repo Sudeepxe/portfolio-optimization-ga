@@ -57,12 +57,12 @@ The project includes:
 ### 📉 Out-of-Sample Performance
 - Real-world Performance
 - Generalization
-![Performance](Images/Out-of-Sample Performance.png)
+![Performance](images/out_of_sample.png)
 
 ### 📈 Risk vs Return Comparison
 - Direct Comparison
 - GA vs Equal vs Random
-![Risk Return](Images/Risk vs Return Comparison.png)
+![Risk Return](risk_return.png)
 
 
 ---
