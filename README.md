@@ -48,7 +48,7 @@ The project includes:
 - Algorithm learning process
 - Optimization stable
 <p align="center">
-  <img src="images/ga_convergence.png" width="6800"/>
+  <img src="images/ga_convergence.png" width="800"/>
 </p>
 
 ### ⚖️ Risk-Return Tradeoff (Lambda)
