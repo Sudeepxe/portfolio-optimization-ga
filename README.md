@@ -54,17 +54,23 @@ The project includes:
 ### ⚖️ Risk-Return Tradeoff (Lambda)
 - Advanced concept:
 - Risk vs Return tradeoff tuning
-![Lambda](images/lambda_tradeoff.png)
+<p align="center">
+  <img src="images/lambda_tradeoff.png" width="600"/>
+</p>
 
 ### 📉 Out-of-Sample Performance
 - Real-world Performance
 - Generalization
-![Performance](images/out_of_sample.png)
+<p align="center">
+  <img src="images/out_of_sample.png" width="600"/>
+</p>
 
 ### 📈 Risk vs Return Comparison
 - Direct Comparison
 - GA vs Equal vs Random
-![Risk Return](risk_return.png)
+<p align="center">
+  <img src="images/risk_return.png" width="600"/>
+</p>
 
 
 ---
