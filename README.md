@@ -47,7 +47,9 @@ The project includes:
 - Generation vs Fitness
 - Algorithm learning process
 - Optimization stable
-<img src="images/ga_covergence.png "width="600"/>
+<p align="center">
+  <img src="images/ga_convergence.png" width="600"/>
+</p>
 
 ### ⚖️ Risk-Return Tradeoff (Lambda)
 - Advanced concept:
