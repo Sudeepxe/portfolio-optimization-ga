@@ -118,7 +118,34 @@ portfolio-optimization-ga/
 
 ---
 
+## ▶️ How to Run
+
+1. Clone the repository
+2. Open `portfolio_optimization.Rmd`
+3. Run in RStudio
+4. Generate results and visualizations
+
+---
+
+## 🔮 Future Improvements
+
+- Incorporate real-time financial data
+- Apply deep learning for asset prediction
+- Improve portfolio diversification techniques
+
+---
+
 ## 👨‍💻 Author
 
 Sudeep Chakravarty  
 MSc Advanced Computer Science with Data Science
+🚀 MSc AI for Finance Project  
+📊 Genetic Algorithm Optimization  
+📈 Risk-Return Analysis 
+
+---
+
+## 📬 Connect with Me
+
+If you found this project interesting, feel free to connect on LinkedIn!
+www.linkedin.com/in/sudeep-chakravarty-51142422b
