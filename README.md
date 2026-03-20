@@ -52,7 +52,7 @@ The project includes:
 ### ⚖️ Risk-Return Tradeoff (Lambda)
 - Advanced concept:
 - Risk vs Return tradeoff tuning
-![Lambda](Images/Lambda Tradeoff Graph.png)
+![Lambda](Images/Lambda%20Tradeoff Graph%20Plot.png)
 
 ### 📉 Out-of-Sample Performance
 - Real-world Performance
