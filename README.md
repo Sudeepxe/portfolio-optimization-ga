@@ -20,7 +20,7 @@ In this project, I implemented a **Genetic Algorithm-based approach** to:
 
 ## 🧠 Key Features
 
-- Genetic Algorithm for portfolio weight optimization  
+- Genetic Algorithm for portfolio weight optimization 
 - Risk-return trade-off using lambda parameter  
 - Train/Test split for real-world evaluation  
 - Comparison with:
@@ -39,14 +39,31 @@ In this project, I implemented a **Genetic Algorithm-based approach** to:
 
 ---
 
-## 📈 Visualizations
+## 📊 Key Visualizations
 
 The project includes:
 
-- GA convergence plot  
-- Out-of-sample performance comparison  
-- Risk vs Return scatter plots  
-- Lambda-based trade-off analysis  
+### 🔄 GA Convergence
+- Generation vs Fitness
+- Algorithm learning process
+- Optimization stable
+![GA Convergence](Images/GA Convergence.png)
+
+### ⚖️ Risk-Return Tradeoff (Lambda)
+- Advanced concept:
+- Risk vs Return tradeoff tuning
+![Lambda](Images/Lambda Tradeoff Graph.png)
+
+### 📉 Out-of-Sample Performance
+- Real-world Performance
+- Generalization
+![Performance](Images/Out-of-Sample Performance.png)
+
+### 📈 Risk vs Return Comparison
+- Direct Comparison
+- GA vs Equal vs Random
+![Risk Return](Images/Risk vs Return Comparison.png)
+
 
 ---
 
