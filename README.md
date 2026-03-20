@@ -48,28 +48,28 @@ The project includes:
 - Algorithm learning process
 - Optimization stable
 <p align="center">
-  <img src="images/ga_convergence.png" width="600"/>
+  <img src="images/ga_convergence.png" width="6800"/>
 </p>
 
 ### ⚖️ Risk-Return Tradeoff (Lambda)
 - Advanced concept:
 - Risk vs Return tradeoff tuning
 <p align="center">
-  <img src="images/lambda_tradeoff.png" width="600"/>
+  <img src="images/lambda_tradeoff.png" width="800"/>
 </p>
 
 ### 📉 Out-of-Sample Performance
 - Real-world Performance
 - Generalization
 <p align="center">
-  <img src="images/out_of_sample.png" width="600"/>
+  <img src="images/out_of_sample.png" width="800"/>
 </p>
 
 ### 📈 Risk vs Return Comparison
 - Direct Comparison
 - GA vs Equal vs Random
 <p align="center">
-  <img src="images/risk_return.png" width="600"/>
+  <img src="images/risk_return.png" width="800"/>
 </p>
 
 
