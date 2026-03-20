@@ -3,6 +3,8 @@ Portfolio Optimization using Genetic Algorithms (GA) to maximize return and mini
 
 # 📊 Portfolio Optimization using Genetic Algorithms (GA)
 
+🚀 Built using Genetic Algorithms to optimize financial portfolios by balancing risk and return.
+
 This project focuses on optimizing a portfolio of financial assets using **Genetic Algorithms (GA)** to achieve an optimal balance between **risk and return**.
 
 ---
@@ -55,6 +57,7 @@ The project includes:
 ### ⚖️ Risk-Return Tradeoff (Lambda)
 - Advanced concept:
 - Risk vs Return tradeoff tuning
+- This plot shows how portfolio risk and return change with different lambda values.
 <p align="center">
   <img src="images/lambda_tradeoff.png" width="800"/>
 </p>
@@ -88,17 +91,14 @@ The project includes:
 ## 📂 Project Structure
 
 portfolio-optimization-ga/
-│
-├── notebooks/
+│── notebooks/
 │   └── portfolio_optimization.Rmd
-│
-├── results/
+│── images/
+│── results/
 │   └── portfolio_optimization_report.pdf
-│
-├── README.md
-└── LICENSE
-
----
+│── data/
+│── README.md
+│── LICENSE
 
 ---
 
@@ -137,11 +137,10 @@ portfolio-optimization-ga/
 
 ## 👨‍💻 Author
 
-Sudeep Chakravarty  
-MSc Advanced Computer Science with Data Science
-🚀 MSc AI for Finance Project  
-📊 Genetic Algorithm Optimization  
-📈 Risk-Return Analysis 
+**Sudeep Chakravarty**  
+MSc Advanced Computer Science with Data Science  
+📊 AI for Finance | 📈 Portfolio Optimization | 🤖 Machine Learning 
+
 
 ---
 
