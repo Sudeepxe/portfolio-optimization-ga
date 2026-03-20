@@ -1,0 +1,412 @@
+---
+title: "Portfolio optimisation using Genetic Algortithm"
+author: "Sudeep Chakravarty"
+date: "2026-02-12"
+output: pdf_document
+latex_engine: xelatex
+---
+# 1. Introduction
+
+Portfolio optimisation is a fundamental problem in finance, where the objective
+is to determine an optimal allocation of capital across a set of assets. Traditional
+approaches such as the Markowitz mean-variance framework rely on convex optimisation
+techniques. However, evolutionary algorithms such as Genetic Algortithms (GAs) provide
+a flexible alternative capable of handling complex objective functions and constraints.
+
+In this assignment, a Genetic Algortithm is used to optimise portfolio weights in order
+to balance expected return and risk.The performance of the evolved portfolio is
+evaluated on unseen future data and compared against equal-weighted and randomly 
+generated portfolios. Additionally, different levels of risk prefrence are explored
+using a lambda parameter, and the GA is extended to perform asset selection from a
+larger pool.
+
+# 2. Construction of Portfolio using GA
+
+Portfolio Construction using Genetic Algorithm:
+
+A set of 10 assets was selected and historical daily adjusted closing prices were 
+obtained. Daily returns were calculated using log-return calculations. The optimisation
+objective was defined using a risk-adjusted return functions:
+  
+Where lambda represents the investor's risk aversion parameter.
+
+A real-valued Genetic Algorithm was implemented using the GA package. The algorithm evolves candidate portfolio weights under the constraint that all weights are non-negative and sum
+to one.The main parameter used were:
+  
+  - Population size:50
+  - Maximum generations:100
+  - Real-valued encoding
+  - Fitness maximisation
+
+The convergence plot shows that the fitness value stabilises after several generations, indicating that the GA successfully converged to a stable optimal solution.
+
+In this implemention, the objectives was to maximize expected return while 
+penalising risk throught the lambda parameter. A higher lambda increases the
+weight given to portfolio volatility.
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+library(quantmod)
+library(PerformanceAnalytics)
+library(GA)
+
+# Select 10 assets
+tickers <- c("AAPL", "MSFT", "GOOG", "AMZN", "META","TSLA", "NVDA", "JPM", "NFLX", "AMD")
+# Download Data(Training)
+getSymbols(tickers, from = "2019-01-01", to = "2023-12-31")
+# Extract adjusted Close prices
+prices <- do.call(merge, lapply(tickers, function(x) Cl(get(x))))
+colnames(prices) <- tickers
+
+# Calculate daily returns
+returns <- na.omit(Return.calculate(prices))
+head(returns)
+
+# Fitness Function define
+fitness_function <- function(w,returns){
+w <- w / sum(w)
+port_return <- mean(returns %*% w)
+port_risk <- sd(returns %*% w)
+lambda <- 0.5
+fitness <- port_return - lambda * port_risk
+return(fitness)
+}
+
+# GA Run
+num_assets <- ncol(returns)
+ga_result <-ga(type = "real-valued",
+fitness = function(w)
+fitness_function(w, returns),
+                lower = rep(0, num_assets),
+                upper = rep(1, num_assets),
+                popSize = 50,
+                maxiter = 100,
+                run = 50)
+                
+# Optimal Weights calculate
+optimal_weights <- as.numeric(ga_result@solution)
+optimal_weights <- optimal_weights / sum(optimal_weights)
+optimal_weights
+
+#  Portfolio Performance calcul5ate
+opt_port_return <- mean(returns %*% optimal_weights)
+opt_port_risk <- sd(returns %*% optimal_weights)
+opt_port_return
+opt_port_risk
+
+cat("Optimal Weights:\n")
+round(optimal_weights, 4)
+
+cat("In-sample Expected Return:", round(opt_port_return, 5), "\n")
+cat("In-sample Risk:", round(opt_port_risk, 5), "\n")
+
+# Equal weights setup (used later)
+n_assets <- ncol(returns)
+equal_weights <- rep(1/n_assets, n_assets)
+
+# Plot GA goverenance
+plot(ga_result)
+```
+
+# 3. Evaluation on unseen Future Data
+
+Evaluation on Unseen data:
+
+To assess generalisation performance, the dataset was divided into training and
+testing periods. The GA was trained on historical data(training period), and the
+optimised weights were than applied to unseen future data(test period).
+
+The evolved portfolio maintained reasonable performance on the unseen dataset.
+Althought some performance variation was observed, the portfolio continued to
+demonstrate a balanced return-risk profile. This suggests that the GA did not
+signficantly overfit the training data.
+
+Splitting the dataset into training and testing periods helps reduce the risk of
+overfitting. A model that performs well only on training data may not generalise 
+to unseen data. The comparable performance observed on the test period suggests
+that the GA solution captures meaningful structure in the data rather than noise.
+
+```{r, echo=FALSE}
+# Equal weights setup (used later)
+n_assets <- ncol(returns)
+equal_weights <- rep(1/n_assets, n_assets)
+
+# Split data
+train_returns <- returns["2019/2022",]
+test_returns <- returns["2023",]
+
+# Weights normalized
+optimal_weights <- as.numeric(ga_result@solution)
+optimal_weights <- optimal_weights / sum(optimal_weights)
+optimal_weights
+
+# Performance on test data
+test_port_return <- mean(test_returns %*% optimal_weights)
+test_port_risk <- sd(test_returns %*% optimal_weights)
+test_port_return
+test_port_risk
+cat("Out-of-sample Expected Return:", round(test_port_return, 5), "\n")
+cat("Out-of-sample Risk:", round(test_port_risk, 5), "\n")
+ga_test_returns <- test_returns %*% optimal_weights
+equal_test_returns <- test_returns %*% equal_weights
+
+ga_cum <- cumprod(1 + ga_test_returns)
+equal_cum <- cumprod(1 + equal_test_returns)
+
+plot(index(test_returns),
+     ga_cum,
+     type = "l",
+     col = "red",
+     lwd = 2,
+     xlab = "Date",
+     ylab = "Cumulative Growth",
+     main = "Out-of-Sample Performance (2023)")
+
+lines(index(test_returns),
+      equal_cum,
+      col = "blue",
+      lwd = 2)
+
+legend("topleft",
+       legend = c("GA Optimized", "Equal Weight"),
+       col = c("red", "blue"),
+       lwd = 2)
+```
+
+# 4. Comparison with Evenly Weighted and Random Portfolio
+
+Comparison with Equal-Weighted and Random Portfolios:
+
+To evaluate the effectiveness of the GA-based optimisation,the evolved portfolio 
+was compared with:
+  
+  1. An equally weighted portfolio.
+  2. A randomly generated portfolio.
+
+Results shows that the GA-optimised portfolio achieves a superior risk-return
+tradeoff. While the equal-weighted portfolio provides a stable baseline, and the
+random portfolio consistently delivers improved return per unit as risk.
+
+This indicates that evolutionary optimisations is capable of identifying more 
+efficient alloctions compared to native allocations strategies.
+
+The GA-optimized portfolio achives a higher expected return with competitive
+risk compared to equal-weighted and random portfolios, demonstrating the
+effectiveness of evolutionary optimisation.
+
+The equally weighted portfolio serves as a simple and widely used benchmark, as
+it does not rely on optimisation assumptions. The random portfolio provide a
+baseline for naive allocation. The GA based approach outperforming these
+benchmark indicates that the optimisation process adds value beyond naive
+diversification.
+
+```{r,echo=FALSE}
+# Equal weights setup (used later)
+n_assets <- ncol(returns)
+equal_weights <- rep(1/n_assets, n_assets)
+# Evenly Weighted Portfolio
+n_assets <- ncol(returns)
+equal_weights <- rep(1/n_assets, n_assets)
+equal_port_return <- mean(returns %*% equal_weights)
+equal_port_risk <- sd(returns %*% equal_weights)
+
+# Random Portfolio
+
+set.seed(123)
+random_weights <- runif(n_assets)
+random_weights <- random_weights / sum(random_weights)
+random_port_return <- mean(returns %*% random_weights)
+random_port_risk <- sd(returns %*% random_weights)
+
+comparison <- data.frame(
+Portfolio = c("GA Optimized", "Equal Weighted", "Random"),
+Return = c(opt_port_return, equal_port_return, random_port_return),
+Risk = c(opt_port_risk, equal_port_risk, random_port_risk)
+)
+comparison
+colors <- c("red", "blue", "darkgreen")
+
+plot(comparison$Risk,
+     comparison$Return,
+     pch = 19,
+     col = colors,
+     cex = 1.5,
+     xlab = "Portfolio Risk (Standard Deviation)",
+     ylab = "Expected Return",
+     main = "Risk vs Return Comparison")
+
+text(comparison$Risk,
+     comparison$Return,
+     labels = comparison$Portfolio,
+     pos = 4)
+
+legend("bottomright",
+       legend = comparison$Portfolio,
+       col = colors,
+       pch = 19)
+```
+
+# 5. Portfolios with Differntly Balanced Risk and Return
+
+Risk-Return Trade With Different Lambda Values:
+
+  To simulate different investor prefrence, the optimisation was repeated for
+  multiple values of lambda.
+  
+  - Lower lambda places more emphasis on maximising return.
+  - Higher lambda places greater emphasis on minimising risk.
+  
+  the result demonstrate a clear risk-return tradeoff. As lambda increases, portfolio
+  risk decreases but expected return also declines. This behaviour aligns with
+  financial theory and resembles the concept of an efficient frontier.
+  
+  These findings confirm that the GA framework can flexibly adapt to varying 
+  levels of risk tolerance.
+    
+  As lambda increases, the optimisation objective increasingly penalises portfolio
+  volatility, resulting in lower risk allocations and adjusted expected returns.
+  This illustrates the classical risk–return trade-off in evolutionary 
+  optimisation.
+  
+  From an economic perspective, investors with low risk aversion (low lambda)
+  may prefer higher-return but more volatile portfolios. Conversely, conservative
+  investors may choose higher lambda values to prioritise capital preservations.
+  This demonstrates the flexibility of the GA framework in adapting to different
+  investor profiles.
+  
+```{r,echo=FALSE}
+lambda_values <- c(0,5, 1,2)
+results_lambda <- data.frame(
+Lambda = numeric(),
+Return = numeric(),
+Risk = numeric()
+)
+for (l in lambda_values) {
+fitness_function <- function(w) {
+w <- w / sum(w)
+port_return <- mean(returns %*% w)
+port_risk <- sd(returns %*% w)
+return(port_return - 1 * port_risk)
+}
+ga_result <- ga(type = "real-valued", fitness = fitness_function,
+                                      lower = rep(0, ncol(returns)),
+                                      upper = rep(1, ncol(returns)),
+                                      popSize = 50,
+                                      maxiter = 100,
+                                      run = 50)
+optimal_weights <- as.numeric(ga_result@solution)
+optimal_weights <- optimal_weights / sum(optimal_weights)
+
+port_return <- mean(returns %*% optimal_weights)
+port_risk <- sd(returns %*% optimal_weights)
+
+results_lambda <- rbind(results_lambda, data.frame(Lambda = l,
+Return = port_return,
+Risk = port_risk))
+}
+results_lambda
+plot(results_lambda$Risk,
+     results_lambda$Return,
+     pch = 19,
+     col = "purple",
+     xlab = "Risk",
+     ylab = "Return",
+     main = "Risk-Return Tradeoff for Different Lambda")
+
+text(results_lambda$Risk,
+     results_lambda$Return,
+     labels = results_lambda$Lambda,
+     pos = 4)
+
+risk_values <- c(opt_port_risk, equal_port_risk, random_port_risk)
+return_values <- c(opt_port_return, equal_port_return, random_port_return)
+plot(risk_values, return_values,
+xlab="Risk(Std Dev)")
+ylab="Return (Mean)"
+main="Risk vs Return Comparison"
+pch=19
+col=c("blue", "red", "darkgreen")
+text(risk_values, return_values, labels=c("GA", "Equal", "Random"),
+pos=4)
+```
+# 6. Asset Selection using Genetic Algorithm
+
+ Assets Selections using GA:
+  
+  The GA was further extended to perform asset selection from a larger pool of
+  assets. Instead of only optimising weights, the algorithm also determined which
+  assets should be included in the portfolio.
+  
+  This increases the solution space significantly, as the GA mush now search both
+  the assets subset and th weights allocations simultaneosly.
+  
+  The selected subset demonstrated competitive performance relative to the full
+  portfolio. This suggests that the GA is capable of identifying a smaller set of
+  high-performing assets while maintaining favorable risk-return characteristics.
+  
+  Assets selection using evolutionary methods provides an advantages over manual
+  selection by exploring a much larger combination space effeciently.
+  
+The genetic algorithm selected AAPL, MSFT, GOOG & JPM as the optimal subset of 
+assets, indicating that these stocks contributed most effectively to the 
+risk-return objective.
+
+The selected assets include large technology and financial firms, which may offer
+strong return potential combined with diversification benefits. The GA appears
+to favour assets that contribute positively to the overalll risk-adjusted 
+objective. This suggests that the algorithm effectively balances individual assets 
+performance with portfolio-level risk characteristics.
+
+```{r,echo=FALSE}
+# Fitness function for asset selection
+fitness_selection <- function(binary_vector){
+if (sum(binary_vector) == 0) {
+return(-999)
+}
+# Selected assets for subsets
+selected_returns <- returns[, as.logical(binary_vector)]
+# Equal weighted amoung selected assets
+weights <- rep(1/ ncol(selected_returns), ncol(selected_returns))
+# Portfolio return & risk
+port_return <- mean(selected_returns %*% weights)
+port_risk <- sd(selected_returns %*% weights)
+# Objective: maximize return - risk
+fitness_value <- port_return - port_risk
+return(fitness_value)
+}
+# Binary Generic Algorithm
+ga_selection <- ga(type = "binary", fitness = fitness_selection, 
+nBits = ncol(returns),
+popSize = 50,
+maxiter = 100,
+run = 50)
+# solution
+best_selection <- ga_selection@solution
+# Convert to logical selection
+selected_assets <- tickers[as.logical(best_selection)]
+selected_assets
+```
+# 7. Conclusion
+
+Conclusion:
+
+  This study demonstrates that Genetic Algortithms provide a powerful and flexible
+  framework for portfolio optimisation. The GA successfully identifies optimal
+  optimal weight allocations and showed stable convergence behaviour.
+  
+  While evaluated on unseen future data, the optimised portfolio maintained 
+  competitive performance. Comparisons with equal-weighted and random portfolios
+  confirmed the superiority of the evolutionary approach.
+  
+  Furthermore, varying the risk preference parameter illustracted a clear
+  risk-return tradeoff, and extending the GA to assets selection further 
+  enhanced the flexibility of the framework.
+  
+  Overall, evolutionary computations offers a robust alternative to traditional 
+  portfolio optimisation techniques.
+  
+  Despite promising results, the GA approach has limitations. The optimisations 
+  outcome may depend on parameter choices such as population size and number of
+  generations. Additionally, financial markets are dynamic, and past data may not
+  fully represent future conditions. Future work could explore alternative 
+  objective functions or multi-objective optimisations techniques.
+  
